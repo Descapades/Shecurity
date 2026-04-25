@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "SHEcurity"
 include(":app")
- 
+include(":mobile")

@@ -33,7 +33,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import com.example.shecurity.R
+import com.example.shecurity.presentation.GpsTrackingScreen
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.ui.input.pointer.pointerInput
 
+val rulukoFont = FontFamily(
+    Font(R.font.ruluko_regular)
+)
+
+val shecurityPink = Color(0xFFFF999F)
+val shecurityPurple = Color(0xFF9A719D)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,17 +65,61 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun WearApp() {
+    var currentScreen by remember { mutableStateOf("main") }
+
     SHEcurityTheme {
-        MainScreen()
+        when (currentScreen) {
+
+            "main" -> MainScreen(
+                onGpsClick = { currentScreen = "gps" },
+                on911Click = { currentScreen = "dialing" },
+                onSwipeLeft = { currentScreen = "settings" }
+            )
+
+            "gps" -> GpsTrackingScreen(
+                onSafeClick = { currentScreen = "safe" },
+                on911Click = { currentScreen = "dialing" }
+            )
+
+            "safe" -> SafeScreen(
+                onClick = { currentScreen = "main" }
+            )
+
+            "dialing" -> DialingScreen(
+                onCancelClick = { currentScreen = "main" },
+                onFinish = { currentScreen = "calling" }
+            )
+
+            "calling" -> CallingScreen(
+                onEndCall = { currentScreen = "main" }
+            )
+
+            "settings" -> SettingsScreen(
+                onClick = { currentScreen = "main" }
+            )
+        }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    onGpsClick: () -> Unit,
+    on911Click: () -> Unit,
+    onSwipeLeft: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background),
+            .background(Color.Black)
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { change, dragAmount ->
+                    change.consume()
+
+                    if (dragAmount < -20) {
+                        onSwipeLeft()
+                    }
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -67,8 +127,9 @@ fun MainScreen() {
         ) {
             Text(
                 text = "Are you safe?",
-                color = Color(0xFFFF9AA2),
-                fontSize = 16.sp
+                color = shecurityPink,
+                fontSize = 24.sp,
+                fontFamily = rulukoFont
             )
 
             Spacer(modifier = Modifier.height(18.dp))
@@ -77,36 +138,34 @@ fun MainScreen() {
                 horizontalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 Button(
-                    onClick = {
-                        // GPS screen goes here next
-                    },
-                    modifier = Modifier.size(48.dp),
+                    onClick = onGpsClick,
+                    modifier = Modifier.size(58.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF9B6AA7)
+                        backgroundColor = shecurityPurple
                     )
                 ) {
                     Text(
                         text = "GPS",
                         color = Color.White,
-                        fontSize = 12.sp
+                        fontSize = 18.sp,
+                        fontFamily = rulukoFont
                     )
                 }
 
                 Button(
-                    onClick = {
-                        // 911 screen goes here next
-                    },
-                    modifier = Modifier.size(48.dp),
+                    onClick = on911Click,
+                    modifier = Modifier.size(58.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFFFF8FA3)
+                        backgroundColor = shecurityPink
                     )
                 ) {
                     Text(
                         text = "911",
                         color = Color.White,
-                        fontSize = 12.sp
+                        fontSize = 18.sp,
+                        fontFamily = rulukoFont
                     )
                 }
             }
