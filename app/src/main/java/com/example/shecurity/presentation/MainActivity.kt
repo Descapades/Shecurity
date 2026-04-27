@@ -43,6 +43,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.ui.input.pointer.pointerInput
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.LocalContext
+import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.tasks.await
 
 val rulukoFont = FontFamily(
     Font(R.font.ruluko_regular)
@@ -67,16 +78,47 @@ class MainActivity : ComponentActivity() {
 fun WearApp() {
     var currentScreen by remember { mutableStateOf("main") }
 
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var alertMessage by remember { mutableStateOf("") }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            scope.launch {
+                alertMessage = buildGpsAlertMessage(context)
+                currentScreen = "gps"
+            }
+        }
+    }
+
     SHEcurityTheme {
         when (currentScreen) {
 
             "main" -> MainScreen(
-                onGpsClick = { currentScreen = "gps" },
+                onGpsClick = {
+                    val permissionGranted = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+
+                    if (permissionGranted) {
+                        scope.launch {
+                            alertMessage = buildGpsAlertMessage(context)
+                            currentScreen = "gps"
+                        }
+                    } else {
+                        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    }
+                },
                 on911Click = { currentScreen = "dialing" },
                 onSwipeLeft = { currentScreen = "settings" }
             )
 
             "gps" -> GpsTrackingScreen(
+                alertMessage = alertMessage,
                 onSafeClick = { currentScreen = "safe" },
                 on911Click = { currentScreen = "dialing" }
             )
@@ -170,5 +212,24 @@ fun MainScreen(
                 }
             }
         }
+    }
+}
+
+suspend fun buildGpsAlertMessage(context: Context): String {
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    val location = try {
+        fusedLocationClient.lastLocation.await()
+    } catch (e: SecurityException) {
+        null
+    }
+
+    val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
+    val primaryContact = prefs.getString("primary_contact", "Emergency Contact") ?: "Emergency Contact"
+
+    return if (location != null) {
+        "SHEcurity Alert sent to $primaryContact\nLocation: ${location.latitude}, ${location.longitude}"
+    } else {
+        "SHEcurity Alert sent to $primaryContact\nLocation unavailable"
     }
 }

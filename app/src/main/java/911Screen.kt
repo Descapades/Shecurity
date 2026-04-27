@@ -44,6 +44,8 @@ fun DialingScreen(
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
+        CirculatingLightRing()
+
         Column(
             modifier = Modifier.offset(y = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally

@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mobile"
+    namespace = "com.example.shecurity"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.mobile"
+        applicationId = "com.example.shecurity"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -57,4 +57,7 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+    implementation("com.google.android.gms:play-services-wearable:19.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }
