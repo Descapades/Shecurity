@@ -48,10 +48,13 @@ class MainActivity : ComponentActivity() {
                 )
 
                 "contactAlert" -> ContactAlertScreen(
-                    onBackClick = { currentScreen = "menu" }
+                    onBackClick = { currentScreen = "menu" },
+                    onFollowClick = { currentScreen = "contactMap" }
                 )
 
-
+                "contactMap" -> ContactMapScreen(
+                    onBackClick = { currentScreen = "contactAlert" }
+                )
             }
         }
     }

@@ -22,7 +22,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ContactAlertScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onFollowClick: () -> Unit
 ) {
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
@@ -99,7 +100,10 @@ fun ContactAlertScreen(
                 text = "Click to follow",
                 color = shecurity_purple,
                 fontSize = 24.sp,
-                fontFamily = ruluko_regular
+                fontFamily = ruluko_regular,
+                modifier = Modifier.clickable {
+                    onFollowClick()
+                }
             )
         }
 
