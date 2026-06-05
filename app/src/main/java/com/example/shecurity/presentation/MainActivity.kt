@@ -88,7 +88,12 @@ fun WearApp() {
         if (isGranted) {
             scope.launch {
                 alertMessage = buildGpsAlertMessage(context)
-                currentScreen = "gps"
+
+                if (alertMessage.contains("Location unavailable")) {
+                    currentScreen = "gpsWeak"
+                } else {
+                    currentScreen = "gps"
+                }
             }
         }
     }
@@ -126,7 +131,12 @@ fun WearApp() {
                     if (permissionGranted) {
                         scope.launch {
                             alertMessage = buildGpsAlertMessage(context)
-                            currentScreen = "gps"
+
+                            if (alertMessage.contains("Location unavailable")) {
+                                currentScreen = "gpsWeak"
+                            } else {
+                                currentScreen = "gps"
+                            }
                         }
                     } else {
                         locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -160,6 +170,10 @@ fun WearApp() {
             )
 
             "battery" -> LowBatteryScreen(
+                onClick = { currentScreen = "main" }
+            )
+
+            "gpsWeak" -> GpsWeakScreen(
                 onClick = { currentScreen = "main" }
             )
         }
