@@ -17,14 +17,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
-import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.shecurity.presentation.theme.SHEcurityTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import com.example.shecurity.R
-import com.example.shecurity.presentation.GpsTrackingScreen
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
@@ -54,6 +49,10 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.tasks.await
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
+import androidx.compose.runtime.LaunchedEffect
 
 val rulukoFont = FontFamily(
     Font(R.font.ruluko_regular)
@@ -91,6 +90,26 @@ fun WearApp() {
                 alertMessage = buildGpsAlertMessage(context)
                 currentScreen = "gps"
             }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        val batteryIntent = context.registerReceiver(
+            null,
+            IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        )
+
+        val level = batteryIntent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
+        val scale = batteryIntent?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1
+
+        val batteryPercent = if (level >= 0 && scale > 0) {
+            level * 100 / scale
+        } else {
+            100
+        }
+
+        if (batteryPercent <= 15) {
+            currentScreen = "battery"
         }
     }
 
@@ -137,6 +156,10 @@ fun WearApp() {
             )
 
             "settings" -> SettingsScreen(
+                onClick = { currentScreen = "main" }
+            )
+
+            "battery" -> LowBatteryScreen(
                 onClick = { currentScreen = "main" }
             )
         }

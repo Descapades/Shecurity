@@ -1,7 +1,6 @@
 package com.example.shecurity.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +19,6 @@ import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Text
 import androidx.compose.runtime.*
 import kotlinx.coroutines.delay
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.offset
 
 @Composable

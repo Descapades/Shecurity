@@ -59,5 +59,7 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
     implementation("com.google.android.gms:play-services-wearable:19.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation("com.google.maps.android:maps-compose:4.4.1")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }

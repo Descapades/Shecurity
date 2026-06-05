@@ -13,18 +13,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun ContactMapScreen(
     onBackClick: () -> Unit
 ) {
+    val sharedLocation = LatLng(27.9506, -82.4572)
+
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(sharedLocation, 15f)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(start = 24.dp, top = 40.dp, end = 24.dp)
     ) {
         Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, top = 40.dp, end = 24.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -41,18 +55,20 @@ fun ContactMapScreen(
             Text(
                 text = "Viewing Judy's Location",
                 color = shecurity_pink,
-                fontSize = 28.sp,
+                fontSize = 24.sp,
                 fontFamily = ruluko_regular
             )
         }
 
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Text(
-            text = "Map screen placeholder",
-            color = shecurity_purple,
-            fontSize = 24.sp,
-            fontFamily = ruluko_regular
-        )
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState
+        ) {
+            Marker(
+                state = MarkerState(position = sharedLocation),
+                title = "Judy",
+                snippet = "Shared emergency location"
+            )
+        }
     }
 }

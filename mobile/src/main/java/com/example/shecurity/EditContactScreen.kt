@@ -2,9 +2,7 @@ package com.example.shecurity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
@@ -137,9 +135,6 @@ fun EditContactScreen(
                     val updatedContacts = contacts.filter { it.name != contactName }
 
                     saveContacts(context, updatedContacts)
-                    if (isPrimary) {
-                        syncPrimaryContactToWatch(context, name)
-                    }
 
                     onRemoveClick()
                 }
@@ -165,6 +160,10 @@ fun EditContactScreen(
                     }
 
                     saveContacts(context, updatedContacts)
+
+                    if (isPrimary) {
+                        syncPrimaryContactToWatch(context, name)
+                    }
 
                     onSaveClick()
                 },
