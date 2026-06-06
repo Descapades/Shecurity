@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "891419249568",
+    "project_id": "shecurity-19037",
+    "storage_bucket": "shecurity-19037.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891419249568:android:05eeba09a9c8d4f59eb2c5",
+        "android_client_info": {
+          "package_name": "com.example.shecurity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOC3SZtQFX-n6C85c5P2vvaokHSOVaPZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

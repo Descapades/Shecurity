@@ -53,6 +53,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
 import androidx.compose.runtime.LaunchedEffect
+import com.google.android.gms.location.Priority
 
 val rulukoFont = FontFamily(
     Font(R.font.ruluko_regular)
@@ -87,11 +88,20 @@ fun WearApp() {
     ) { isGranted ->
         if (isGranted) {
             scope.launch {
-                alertMessage = buildGpsAlertMessage(context)
+                val gpsAlertData = buildGpsAlertData(context)
+                alertMessage = gpsAlertData.message
 
-                if (alertMessage.contains("Location unavailable")) {
+                if (gpsAlertData.latitude == null || gpsAlertData.longitude == null) {
                     currentScreen = "gpsWeak"
                 } else {
+                    sendAlertToPhone(
+                        context = context,
+                        contactName = gpsAlertData.primaryContact,
+                        message = gpsAlertData.message,
+                        latitude = gpsAlertData.latitude,
+                        longitude = gpsAlertData.longitude
+                    )
+
                     currentScreen = "gps"
                 }
             }
@@ -130,11 +140,20 @@ fun WearApp() {
 
                     if (permissionGranted) {
                         scope.launch {
-                            alertMessage = buildGpsAlertMessage(context)
+                            val gpsAlertData = buildGpsAlertData(context)
+                            alertMessage = gpsAlertData.message
 
-                            if (alertMessage.contains("Location unavailable")) {
+                            if (gpsAlertData.latitude == null || gpsAlertData.longitude == null) {
                                 currentScreen = "gpsWeak"
                             } else {
+                                sendAlertToPhone(
+                                    context = context,
+                                    contactName = gpsAlertData.primaryContact,
+                                    message = gpsAlertData.message,
+                                    latitude = gpsAlertData.latitude,
+                                    longitude = gpsAlertData.longitude
+                                )
+
                                 currentScreen = "gps"
                             }
                         }
@@ -252,11 +271,21 @@ fun MainScreen(
     }
 }
 
-suspend fun buildGpsAlertMessage(context: Context): String {
+data class GpsAlertData(
+    val message: String,
+    val primaryContact: String,
+    val latitude: Double?,
+    val longitude: Double?
+)
+
+suspend fun buildGpsAlertData(context: Context): GpsAlertData {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     val location = try {
-        fusedLocationClient.lastLocation.await()
+        fusedLocationClient.getCurrentLocation(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            null
+        ).await()
     } catch (e: SecurityException) {
         null
     }
@@ -265,8 +294,18 @@ suspend fun buildGpsAlertMessage(context: Context): String {
     val primaryContact = prefs.getString("primary_contact", "Emergency Contact") ?: "Emergency Contact"
 
     return if (location != null) {
-        "SHEcurity Alert sent to $primaryContact\nLocation: ${location.latitude}, ${location.longitude}"
+        GpsAlertData(
+            message = "SHEcurity Alert sent to $primaryContact",
+            primaryContact = primaryContact,
+            latitude = location.latitude,
+            longitude = location.longitude
+        )
     } else {
-        "SHEcurity Alert sent to $primaryContact\nLocation unavailable"
+        GpsAlertData(
+            message = "SHEcurity Alert sent to $primaryContact\nLocation unavailable",
+            primaryContact = primaryContact,
+            latitude = null,
+            longitude = null
+        )
     }
 }
