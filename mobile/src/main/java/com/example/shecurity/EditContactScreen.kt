@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.foundation.clickable
 
 @Composable
@@ -33,6 +33,7 @@ fun EditContactScreen(
     var name by remember { mutableStateOf(savedContact?.name ?: contactName) }
     var phone by remember { mutableStateOf(savedContact?.phone ?: "") }
     var isPrimary by remember { mutableStateOf(savedContact?.isPrimary ?: false) }
+    var email by remember { mutableStateOf(savedContact?.email ?: "") }
 
     Column(
         modifier = Modifier
@@ -47,7 +48,7 @@ fun EditContactScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 tint = Color.White,
                 modifier = Modifier
@@ -96,6 +97,26 @@ fun EditContactScreen(
         OutlinedTextField(
             value = phone,
             onValueChange = { phone = it },
+            textStyle = LocalTextStyle.current.copy(
+                color = shecurity_pink,
+                fontSize = 18.sp,
+                fontFamily = ruluko_regular
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "Email:",
+            color = shecurity_purple,
+            fontSize = 18.sp,
+            fontFamily = ruluko_regular
+        )
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
             textStyle = LocalTextStyle.current.copy(
                 color = shecurity_pink,
                 fontSize = 18.sp,
@@ -153,7 +174,7 @@ fun EditContactScreen(
 
                     val updatedContacts = contacts.map {
                         if (it.name == contactName) {
-                            Contact(name, phone, isPrimary)
+                            Contact(name, phone, email, isPrimary)
                         } else {
                             if (isPrimary) it.copy(isPrimary = false) else it
                         }

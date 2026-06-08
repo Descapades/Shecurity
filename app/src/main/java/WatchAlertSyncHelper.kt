@@ -5,12 +5,13 @@ import com.google.android.gms.wearable.Wearable
 
 fun sendAlertToPhone(
     context: Context,
+    userName: String,
     contactName: String,
     message: String,
     latitude: Double,
     longitude: Double
 ) {
-    val payload = "$contactName|$message|$latitude|$longitude"
+    val payload = "$userName|$contactName|$message|$latitude|$longitude"
 
     Wearable.getNodeClient(context).connectedNodes
         .addOnSuccessListener { nodes ->

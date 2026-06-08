@@ -95,6 +95,7 @@ fun WearApp() {
                     currentScreen = "gpsWeak"
                 } else {
                     sendAlertToPhone(
+                        userName = "Judy",
                         context = context,
                         contactName = gpsAlertData.primaryContact,
                         message = gpsAlertData.message,
@@ -147,6 +148,7 @@ fun WearApp() {
                                 currentScreen = "gpsWeak"
                             } else {
                                 sendAlertToPhone(
+                                    userName = "Judy",
                                     context = context,
                                     contactName = gpsAlertData.primaryContact,
                                     message = gpsAlertData.message,

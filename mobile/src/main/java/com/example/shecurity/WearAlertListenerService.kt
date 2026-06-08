@@ -11,14 +11,15 @@ class WearAlertListenerService : WearableListenerService() {
             val payload = String(messageEvent.data)
             val parts = payload.split("|")
 
-            if (parts.size >= 4) {
-                val contactName = parts[0]
-                val message = parts[1]
-                val latitude = parts[2].toDoubleOrNull() ?: 0.0
-                val longitude = parts[3].toDoubleOrNull() ?: 0.0
+            if (parts.size >= 5) {
+                val userName = parts[0]
+                val contactName = parts[1]
+                val message = parts[2]
+                val latitude = parts[3].toDoubleOrNull() ?: 0.0
+                val longitude = parts[4].toDoubleOrNull() ?: 0.0
 
                 createEmergencyAlert(
-                    userName = "Destin",
+                    userName = "Judy",
                     contactName = contactName,
                     message = message,
                     latitude = latitude,
@@ -27,7 +28,7 @@ class WearAlertListenerService : WearableListenerService() {
                 showAlertNotification(
                     context = this,
                     title = "SHEcurity Alert",
-                    message = "$contactName requested location tracking."
+                    message = "$userName requested location tracking."
                 )
             }
         }

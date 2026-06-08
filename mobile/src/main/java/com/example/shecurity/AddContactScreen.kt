@@ -26,6 +26,7 @@ fun AddContactScreen(
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var isPrimary by remember { mutableStateOf(false) }
+    var email by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -80,6 +81,27 @@ fun AddContactScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "Email:",
+            color = shecurity_purple,
+            fontSize = 18.sp,
+            fontFamily = ruluko_regular
+        )
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            textStyle = LocalTextStyle.current.copy(
+                color = shecurity_pink,
+                fontSize = 18.sp,
+                fontFamily = ruluko_regular
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
@@ -120,6 +142,7 @@ fun AddContactScreen(
                             Contact(
                                 name = name,
                                 phone = phone,
+                                email = email,
                                 isPrimary = isPrimary
                             )
                         )

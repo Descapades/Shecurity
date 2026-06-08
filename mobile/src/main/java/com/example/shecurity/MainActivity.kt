@@ -22,8 +22,18 @@ class MainActivity : ComponentActivity() {
             ) { }
 
         setContent {
-            var currentScreen by remember { mutableStateOf("menu") }
+            var currentScreen by remember {
+                mutableStateOf(
+                    if (intent.getBooleanExtra("open_contact_alert", false)) {
+                        "contactAlert"
+                    } else {
+                        "menu"
+                    }
+                )
+            }
+
             var selectedContact by remember { mutableStateOf("") }
+
 
             LaunchedEffect(Unit) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
