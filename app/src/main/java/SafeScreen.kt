@@ -2,7 +2,12 @@ package com.example.shecurity.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,11 +31,8 @@ fun SafeScreen(
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset(y = 10.dp),
+            modifier = Modifier.offset(y = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = "You made it safe!",
@@ -38,8 +40,6 @@ fun SafeScreen(
                 fontSize = 18.sp,
                 fontFamily = rulukoFont
             )
-
-            Spacer(modifier = Modifier.height(0.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.safe_icon),

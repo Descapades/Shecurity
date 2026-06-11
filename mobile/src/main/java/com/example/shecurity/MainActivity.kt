@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
             var selectedContact by remember { mutableStateOf("") }
 
             LaunchedEffect(Unit) {
-                kotlinx.coroutines.delay(2000)
+                delay(2000)
 
                 currentScreen =
                     if (intent.getBooleanExtra("open_contact_alert", false)) {

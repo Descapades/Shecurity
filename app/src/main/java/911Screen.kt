@@ -17,7 +17,11 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.offset
 
@@ -26,7 +30,8 @@ fun DialingScreen(
     onCancelClick: () -> Unit,
     onFinish: () -> Unit
 ) {
-    var timeLeft by remember { mutableStateOf(5) }
+    val countdownSeconds = 5
+    var timeLeft by remember { mutableIntStateOf(countdownSeconds) }
 
     LaunchedEffect(Unit) {
         while (timeLeft > 0) {
@@ -63,7 +68,7 @@ fun DialingScreen(
             )
 
             Text(
-                text = "00:0$timeLeft",
+                text = "00:${timeLeft.toString().padStart(2, '0')}",
                 color = shecurityPurple,
                 fontSize = 18.sp,
                 fontFamily = rulukoFont

@@ -169,7 +169,6 @@ fun WearApp() {
             )
 
             "gps" -> GpsTrackingScreen(
-                alertMessage = alertMessage,
                 onSafeClick = { currentScreen = "safe" },
                 on911Click = { currentScreen = "dialing" }
             )
