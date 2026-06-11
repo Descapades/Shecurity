@@ -54,6 +54,7 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import androidx.compose.runtime.LaunchedEffect
 import com.google.android.gms.location.Priority
+import kotlinx.coroutines.withTimeoutOrNull
 
 val rulukoFont = FontFamily(
     Font(R.font.ruluko_regular)
@@ -281,14 +282,33 @@ data class GpsAlertData(
 )
 
 suspend fun buildGpsAlertData(context: Context): GpsAlertData {
+    val permissionGranted = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+
+    if (!permissionGranted) {
+        val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
+        val primaryContact = prefs.getString("primary_contact", "Emergency Contact") ?: "Emergency Contact"
+
+        return GpsAlertData(
+            message = "SHEcurity Alert sent to $primaryContact\nLocation unavailable",
+            primaryContact = primaryContact,
+            latitude = null,
+            longitude = null
+        )
+    }
+
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     val location = try {
-        fusedLocationClient.getCurrentLocation(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            null
-        ).await()
-    } catch (e: SecurityException) {
+        withTimeoutOrNull(5000) {
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                null
+            ).await()
+        }
+    } catch (e: Exception) {
         null
     }
 
