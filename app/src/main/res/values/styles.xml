@@ -2,7 +2,7 @@
 
     <style name="MainActivityTheme.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@android:color/black</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/shecurity_splash_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/shecurity_icon2</item>
         <item name="postSplashScreenTheme">@android:style/Theme.DeviceDefault</item>
     </style>
 </resources>

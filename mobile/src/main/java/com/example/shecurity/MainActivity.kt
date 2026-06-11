@@ -11,6 +11,7 @@ import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
 import android.os.Build
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,16 +24,21 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             var currentScreen by remember {
-                mutableStateOf(
+                mutableStateOf("splash")
+            }
+
+            var selectedContact by remember { mutableStateOf("") }
+
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(2000)
+
+                currentScreen =
                     if (intent.getBooleanExtra("open_contact_alert", false)) {
                         "contactAlert"
                     } else {
                         "menu"
                     }
-                )
             }
-
-            var selectedContact by remember { mutableStateOf("") }
 
 
             LaunchedEffect(Unit) {
@@ -44,6 +50,8 @@ class MainActivity : ComponentActivity() {
             }
 
             when (currentScreen) {
+                "splash" -> MobileSplashScreen()
+
                 "menu" -> MobileMenuScreen(
                     onContactsClick = { currentScreen = "contacts" },
                     onMessageClick = { currentScreen = "message" },
