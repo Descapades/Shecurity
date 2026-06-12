@@ -19,7 +19,7 @@ class WearAlertListenerService : WearableListenerService() {
                 val longitude = parts[4].toDoubleOrNull() ?: 0.0
 
                 createEmergencyAlert(
-                    userName = "Judy",
+                    userName = userName,
                     contactName = contactName,
                     message = message,
                     latitude = latitude,

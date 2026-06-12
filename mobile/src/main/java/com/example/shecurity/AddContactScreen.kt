@@ -145,8 +145,8 @@ fun AddContactScreen(
                         val updatedContacts = contacts.toMutableList()
 
                         if (isPrimary) {
-                            updatedContacts.replaceAll {
-                                it.copy(isPrimary = false)
+                            for (i in updatedContacts.indices) {
+                                updatedContacts[i] = updatedContacts[i].copy(isPrimary = false)
                             }
                         }
 

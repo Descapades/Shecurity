@@ -186,17 +186,18 @@ fun EditContactScreen(
                     val contacts = loadContacts(context)
 
                     val updatedContacts = contacts.map {
-                        when {
-                            it.name == contactName -> Contact(name, phone, email, isPrimary)
-                            isPrimary -> it.copy(isPrimary = false)
-                            else -> it
+                        if (it.name == contactName) {
+                            Contact(name, phone, email, isPrimary)
+                        } else {
+                            if (isPrimary) it.copy(isPrimary = false) else it
                         }
                     }
 
                     saveContacts(context, updatedContacts)
 
-                    if (isPrimary) {
-                        syncPrimaryContactToWatch(context, name)
+                    val primaryContact = updatedContacts.find { it.isPrimary }
+                    if (primaryContact != null) {
+                        syncPrimaryContactToWatch(context, primaryContact.name)
                     }
 
                     onSaveClick()
@@ -209,7 +210,8 @@ fun EditContactScreen(
                     fontFamily = ruluko_regular
                 )
             }
-        }
+                }
     }
 }
+
 

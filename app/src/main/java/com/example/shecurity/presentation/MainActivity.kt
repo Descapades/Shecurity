@@ -82,30 +82,28 @@ fun WearApp() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    var alertMessage by remember { mutableStateOf("") }
-
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
             scope.launch {
                 val gpsAlertData = buildGpsAlertData(context)
-                alertMessage = gpsAlertData.message
 
-                if (gpsAlertData.latitude == null || gpsAlertData.longitude == null) {
-                    currentScreen = "gpsWeak"
-                } else {
-                    sendAlertToPhone(
-                        userName = "Judy",
-                        context = context,
-                        contactName = gpsAlertData.primaryContact,
-                        message = gpsAlertData.message,
-                        latitude = gpsAlertData.latitude,
-                        longitude = gpsAlertData.longitude
-                    )
+                sendAlertToPhone(
+                    userName = "Judy",
+                    context = context,
+                    contactName = gpsAlertData.primaryContact,
+                    message = gpsAlertData.message,
+                    latitude = gpsAlertData.latitude ?: 0.0,
+                    longitude = gpsAlertData.longitude ?: 0.0
+                )
 
-                    currentScreen = "gps"
-                }
+                currentScreen =
+                    if (gpsAlertData.latitude == null || gpsAlertData.longitude == null) {
+                        "gpsWeak"
+                    } else {
+                        "gps"
+                    }
             }
         }
     }
@@ -143,22 +141,22 @@ fun WearApp() {
                     if (permissionGranted) {
                         scope.launch {
                             val gpsAlertData = buildGpsAlertData(context)
-                            alertMessage = gpsAlertData.message
 
-                            if (gpsAlertData.latitude == null || gpsAlertData.longitude == null) {
-                                currentScreen = "gpsWeak"
-                            } else {
-                                sendAlertToPhone(
-                                    userName = "Judy",
-                                    context = context,
-                                    contactName = gpsAlertData.primaryContact,
-                                    message = gpsAlertData.message,
-                                    latitude = gpsAlertData.latitude,
-                                    longitude = gpsAlertData.longitude
-                                )
+                            sendAlertToPhone(
+                                userName = "Judy",
+                                context = context,
+                                contactName = gpsAlertData.primaryContact,
+                                message = gpsAlertData.message,
+                                latitude = gpsAlertData.latitude ?: 0.0,
+                                longitude = gpsAlertData.longitude ?: 0.0
+                            )
 
-                                currentScreen = "gps"
-                            }
+                            currentScreen =
+                                if (gpsAlertData.latitude == null || gpsAlertData.longitude == null) {
+                                    "gpsWeak"
+                                } else {
+                                    "gps"
+                                }
                         }
                     } else {
                         locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
