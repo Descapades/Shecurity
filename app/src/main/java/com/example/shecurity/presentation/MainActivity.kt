@@ -1,8 +1,3 @@
-/* While this template provides a good starting point for using Wear Compose, you can always
- * take a look at https://github.com/android/wear-os-samples/tree/main/ComposeStarter to find the
- * most up to date changes to the libraries and their usages.
- */
-
 package com.example.shecurity.presentation
 
 import android.os.Bundle
@@ -38,23 +33,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.ui.input.pointer.pointerInput
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.compose.ui.platform.LocalContext
-import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.tasks.await
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
 import androidx.compose.runtime.LaunchedEffect
-import com.google.android.gms.location.Priority
-import kotlinx.coroutines.withTimeoutOrNull
+
 
 val rulukoFont = FontFamily(
     Font(R.font.ruluko_regular)
@@ -80,33 +65,6 @@ fun WearApp() {
     var currentScreen by remember { mutableStateOf("main") }
 
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            scope.launch {
-                val gpsAlertData = buildGpsAlertData(context)
-
-                sendAlertToPhone(
-                    userName = "Judy",
-                    context = context,
-                    contactName = gpsAlertData.primaryContact,
-                    message = gpsAlertData.message,
-                    latitude = gpsAlertData.latitude ?: 0.0,
-                    longitude = gpsAlertData.longitude ?: 0.0
-                )
-
-                currentScreen =
-                    if (gpsAlertData.latitude == null || gpsAlertData.longitude == null) {
-                        "gpsWeak"
-                    } else {
-                        "gps"
-                    }
-            }
-        }
-    }
 
     LaunchedEffect(Unit) {
         val batteryIntent = context.registerReceiver(
@@ -133,34 +91,20 @@ fun WearApp() {
 
             "main" -> MainScreen(
                 onGpsClick = {
-                    val permissionGranted = ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
+                    val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
+                    val primaryContact =
+                        prefs.getString("primary_contact", "Emergency Contact") ?: "Emergency Contact"
 
-                    if (permissionGranted) {
-                        scope.launch {
-                            val gpsAlertData = buildGpsAlertData(context)
+                    sendAlertToPhone(
+                        userName = "Judy",
+                        context = context,
+                        contactName = primaryContact,
+                        message = "SHEcurity alert sent to $primaryContact",
+                        latitude = 0.0,
+                        longitude = 0.0
+                    )
 
-                            sendAlertToPhone(
-                                userName = "Judy",
-                                context = context,
-                                contactName = gpsAlertData.primaryContact,
-                                message = gpsAlertData.message,
-                                latitude = gpsAlertData.latitude ?: 0.0,
-                                longitude = gpsAlertData.longitude ?: 0.0
-                            )
-
-                            currentScreen =
-                                if (gpsAlertData.latitude == null || gpsAlertData.longitude == null) {
-                                    "gpsWeak"
-                                } else {
-                                    "gps"
-                                }
-                        }
-                    } else {
-                        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                    }
+                    currentScreen = "gps"
                 },
                 on911Click = { currentScreen = "dialing" },
                 onSwipeLeft = { currentScreen = "settings" }
@@ -271,60 +215,3 @@ fun MainScreen(
     }
 }
 
-data class GpsAlertData(
-    val message: String,
-    val primaryContact: String,
-    val latitude: Double?,
-    val longitude: Double?
-)
-
-suspend fun buildGpsAlertData(context: Context): GpsAlertData {
-    val permissionGranted = ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED
-
-    if (!permissionGranted) {
-        val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
-        val primaryContact = prefs.getString("primary_contact", "Emergency Contact") ?: "Emergency Contact"
-
-        return GpsAlertData(
-            message = "SHEcurity Alert sent to $primaryContact\nLocation unavailable",
-            primaryContact = primaryContact,
-            latitude = null,
-            longitude = null
-        )
-    }
-
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-    val location = try {
-        withTimeoutOrNull(5000) {
-            fusedLocationClient.getCurrentLocation(
-                Priority.PRIORITY_HIGH_ACCURACY,
-                null
-            ).await()
-        }
-    } catch (e: Exception) {
-        null
-    }
-
-    val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
-    val primaryContact = prefs.getString("primary_contact", "Emergency Contact") ?: "Emergency Contact"
-
-    return if (location != null) {
-        GpsAlertData(
-            message = "SHEcurity Alert sent to $primaryContact",
-            primaryContact = primaryContact,
-            latitude = location.latitude,
-            longitude = location.longitude
-        )
-    } else {
-        GpsAlertData(
-            message = "SHEcurity Alert sent to $primaryContact\nLocation unavailable",
-            primaryContact = primaryContact,
-            latitude = null,
-            longitude = null
-        )
-    }
-}

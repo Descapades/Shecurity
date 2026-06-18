@@ -2,6 +2,9 @@ package com.example.shecurity
 
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class WearAlertListenerService : WearableListenerService() {
 
@@ -15,21 +18,33 @@ class WearAlertListenerService : WearableListenerService() {
                 val userName = parts[0]
                 val contactName = parts[1]
                 val message = parts[2]
-                val latitude = parts[3].toDoubleOrNull() ?: 0.0
-                val longitude = parts[4].toDoubleOrNull() ?: 0.0
 
-                createEmergencyAlert(
-                    userName = userName,
-                    contactName = contactName,
-                    message = message,
-                    latitude = latitude,
-                    longitude = longitude
-                )
-                showAlertNotification(
-                    context = this,
-                    title = "SHEcurity Alert",
-                    message = "$userName requested location tracking."
-                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    val mobileLocation = getMobileLocation(this@WearAlertListenerService)
+
+                    val latitude = mobileLocation?.first ?: 0.0
+                    val longitude = mobileLocation?.second ?: 0.0
+
+                    getSharedPreferences("shecurity_prefs", MODE_PRIVATE)
+                        .edit()
+                        .putFloat("last_alert_latitude", latitude.toFloat())
+                        .putFloat("last_alert_longitude", longitude.toFloat())
+                        .putString("last_alert_user", userName)
+                        .apply()
+
+                    createEmergencyAlert(
+                        userName = userName,
+                        contactName = contactName,
+                        message = message,
+                        latitude = latitude,
+                        longitude = longitude
+                    )
+                    showAlertNotification(
+                        context = this@WearAlertListenerService,
+                        title = "SHEcurity Alert",
+                        message = "$userName requested location tracking."
+                    )
+                }
             }
         }
     }
