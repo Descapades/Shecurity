@@ -94,9 +94,11 @@ fun WearApp() {
                     val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
                     val primaryContact =
                         prefs.getString("primary_contact", "Emergency Contact") ?: "Emergency Contact"
+                    val userName =
+                        prefs.getString("user_name", "User") ?: "User"
 
                     sendAlertToPhone(
-                        userName = "Judy",
+                        userName = userName,
                         context = context,
                         contactName = primaryContact,
                         message = "SHEcurity alert sent to $primaryContact",

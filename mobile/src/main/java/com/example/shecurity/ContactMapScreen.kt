@@ -29,6 +29,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import android.content.Context
 import androidx.compose.foundation.layout.Box
+import android.util.Log
 
 @Composable
 fun ContactMapScreen(
@@ -40,6 +41,7 @@ fun ContactMapScreen(
     val latitude = prefs.getFloat("last_alert_latitude", 0f).toDouble()
     val longitude = prefs.getFloat("last_alert_longitude", 0f).toDouble()
     val hasLocation = latitude != 0.0 && longitude != 0.0
+    Log.d("ShecurityMap", "Map latitude = $latitude, longitude = $longitude, hasLocation = $hasLocation")
 
     val userName =
         prefs.getString("last_alert_user", "User") ?: "User"
@@ -73,7 +75,7 @@ fun ContactMapScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "Viewing $userName Location",
+                text = "Viewing $userName's Location",
                 color = shecurity_pink,
                 fontSize = 24.sp,
                 fontFamily = ruluko_regular

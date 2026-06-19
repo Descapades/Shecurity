@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.foundation.clickable
+import android.content.Context
 
 @Composable
 fun EditContactScreen(
@@ -46,7 +47,6 @@ fun EditContactScreen(
     var name by remember { mutableStateOf(savedContact?.name ?: contactName) }
     var phone by remember { mutableStateOf(savedContact?.phone ?: "") }
     var isPrimary by remember { mutableStateOf(savedContact?.isPrimary ?: false) }
-    var email by remember { mutableStateOf(savedContact?.email ?: "") }
 
     Column(
         modifier = Modifier
@@ -120,24 +120,6 @@ fun EditContactScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = "Email:",
-            color = shecurity_purple,
-            fontSize = 18.sp,
-            fontFamily = ruluko_regular
-        )
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            textStyle = LocalTextStyle.current.copy(
-                color = shecurity_pink,
-                fontSize = 18.sp,
-                fontFamily = ruluko_regular
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
@@ -187,7 +169,7 @@ fun EditContactScreen(
 
                     val updatedContacts = contacts.map {
                         if (it.name == contactName) {
-                            Contact(name, phone, email, isPrimary)
+                            Contact(name, phone, isPrimary)
                         } else {
                             if (isPrimary) it.copy(isPrimary = false) else it
                         }
@@ -196,8 +178,18 @@ fun EditContactScreen(
                     saveContacts(context, updatedContacts)
 
                     val primaryContact = updatedContacts.find { it.isPrimary }
+                    val prefs = context.getSharedPreferences(
+                        "shecurity_prefs",
+                        Context.MODE_PRIVATE
+                    )
+
+                    val userName =
+                        prefs.getString("user_name", "User") ?: "User"
                     if (primaryContact != null) {
-                        syncPrimaryContactToWatch(context, primaryContact.name)
+                        syncPrimaryContactToWatch(
+                            context = context,
+                            primaryContactName = primaryContact.name,
+                            userName = userName)
                     }
 
                     onSaveClick()

@@ -18,13 +18,27 @@ class SettingsDataListenerService : WearableListenerService() {
             ) {
                 val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
                 val primaryContact = dataMap.getString("primary_contact")
+                val userName = dataMap.getString("user_name")
 
-                if (!primaryContact.isNullOrBlank()) {
-                    val prefs = getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
+                if (!primaryContact.isNullOrBlank() || !userName.isNullOrBlank()) {
 
-                    prefs.edit()
-                        .putString("primary_contact", primaryContact)
-                        .apply()
+                    val prefs = getSharedPreferences(
+                        "shecurity_prefs",
+                        Context.MODE_PRIVATE
+                    )
+
+                    prefs.edit().apply {
+
+                        if (!primaryContact.isNullOrBlank()) {
+                            putString("primary_contact", primaryContact)
+                        }
+
+                        if (!userName.isNullOrBlank()) {
+                            putString("user_name", userName)
+                        }
+
+                        apply()
+                    }
                 }
             }
         }

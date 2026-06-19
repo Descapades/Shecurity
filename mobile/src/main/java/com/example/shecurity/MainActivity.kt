@@ -14,6 +14,7 @@ import android.os.Build
 import kotlinx.coroutines.delay
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import android.content.Context
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +40,19 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 delay(2000)
 
+                val prefs = getSharedPreferences(
+                    "shecurity_prefs",
+                    Context.MODE_PRIVATE
+                )
+
+                val onboardingComplete =
+                    prefs.getBoolean("onboarding_complete", false)
+
                 currentScreen =
                     if (intent.getBooleanExtra("open_contact_alert", false)) {
                         "contactAlert"
+                    } else if (!onboardingComplete) {
+                        "onboarding"
                     } else {
                         "menu"
                     }
@@ -73,6 +84,12 @@ class MainActivity : ComponentActivity() {
             when (currentScreen) {
                 "splash" -> MobileSplashScreen()
 
+                "onboarding" -> OnboardingScreen(
+                    onFinish = {
+                        currentScreen = "menu"
+                    }
+                )
+
                 "menu" -> MobileMenuScreen(
                     onContactsClick = { currentScreen = "contacts" },
                     onMessageClick = { currentScreen = "message" },
@@ -89,7 +106,8 @@ class MainActivity : ComponentActivity() {
                 )
 
                 "addContact" -> AddContactScreen(
-                    onSaveClick = { currentScreen = "contacts" }
+                    onSaveClick = { currentScreen = "contacts" },
+                    onBackClick = { currentScreen = "contacts" }
                 )
 
                 "editContact" -> EditContactScreen(

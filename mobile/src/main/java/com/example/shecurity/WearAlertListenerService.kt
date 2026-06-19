@@ -5,6 +5,7 @@ import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.util.Log
 
 class WearAlertListenerService : WearableListenerService() {
 
@@ -21,16 +22,21 @@ class WearAlertListenerService : WearableListenerService() {
 
                 CoroutineScope(Dispatchers.IO).launch {
                     val mobileLocation = getMobileLocation(this@WearAlertListenerService)
+                    Log.d("ShecurityLocation", "mobileLocation = $mobileLocation")
 
                     val latitude = mobileLocation?.first ?: 0.0
                     val longitude = mobileLocation?.second ?: 0.0
+                    Log.d("ShecurityLocation", "Saved latitude = $latitude, longitude = $longitude")
 
-                    getSharedPreferences("shecurity_prefs", MODE_PRIVATE)
-                        .edit()
+                    val prefs = getSharedPreferences("shecurity_prefs", MODE_PRIVATE)
+
+                    val saved = prefs.edit()
                         .putFloat("last_alert_latitude", latitude.toFloat())
                         .putFloat("last_alert_longitude", longitude.toFloat())
                         .putString("last_alert_user", userName)
-                        .apply()
+                        .commit()
+
+                    Log.d("ShecurityLocation", "Prefs saved = $saved")
 
                     createEmergencyAlert(
                         userName = userName,

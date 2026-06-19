@@ -39,7 +39,7 @@ fun showAlertNotification(
 
     val pendingIntent = PendingIntent.getActivity(
         context,
-        0,
+        System.currentTimeMillis().toInt(),
         intent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )

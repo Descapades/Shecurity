@@ -40,6 +40,8 @@ fun ContactAlertScreen(
 ) {
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
+    val userName =
+        prefs.getString("user_name", "User") ?: "User"
 
     val alertMessage = prefs.getString(
         "emergency_message",
@@ -85,7 +87,7 @@ fun ContactAlertScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "Judy",
+                text = userName,
                 color = shecurity_pink,
                 fontSize = 36.sp,
                 fontFamily = ruluko_regular
