@@ -23,7 +23,6 @@ import androidx.compose.foundation.clickable
 fun MobileMenuScreen(
     onContactsClick: () -> Unit,
     onMessageClick: () -> Unit,
-    onContactViewClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -64,18 +63,6 @@ fun MobileMenuScreen(
                 fontFamily = ruluko_regular,
                 modifier = Modifier.clickable {
                     onMessageClick()
-                }
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            Text(
-                text = "View Contact Screen",
-                color = shecurity_purple,
-                fontSize = 25.sp,
-                fontFamily = ruluko_regular,
-                modifier = Modifier.clickable {
-                    onContactViewClick()
                 }
             )
         }

@@ -5,7 +5,6 @@ import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import android.util.Log
 
 class WearAlertListenerService : WearableListenerService() {
 
@@ -22,21 +21,38 @@ class WearAlertListenerService : WearableListenerService() {
 
                 CoroutineScope(Dispatchers.IO).launch {
                     val mobileLocation = getMobileLocation(this@WearAlertListenerService)
-                    Log.d("ShecurityLocation", "mobileLocation = $mobileLocation")
 
                     val latitude = mobileLocation?.first ?: 0.0
                     val longitude = mobileLocation?.second ?: 0.0
-                    Log.d("ShecurityLocation", "Saved latitude = $latitude, longitude = $longitude")
+
+                    val contacts = loadContacts(this@WearAlertListenerService)
+                    val primaryContact = contacts.find { it.isPrimary }
+
+                    val mapLink =
+                        if (latitude != 0.0 && longitude != 0.0) {
+                            "https://maps.google.com/?q=$latitude,$longitude"
+                        } else {
+                            "Location unavailable"
+                        }
+
+                    val smsMessage =
+                        "$userName does not feel safe. Please follow their location: $mapLink"
+
+                    if (primaryContact != null) {
+                        sendSmsMessage(
+                            context = this@WearAlertListenerService,
+                            phoneNumber = primaryContact.phone,
+                            message = smsMessage
+                        )
+                    }
 
                     val prefs = getSharedPreferences("shecurity_prefs", MODE_PRIVATE)
 
-                    val saved = prefs.edit()
+                    prefs.edit()
                         .putFloat("last_alert_latitude", latitude.toFloat())
                         .putFloat("last_alert_longitude", longitude.toFloat())
                         .putString("last_alert_user", userName)
-                        .commit()
-
-                    Log.d("ShecurityLocation", "Prefs saved = $saved")
+                        .apply()
 
                     createEmergencyAlert(
                         userName = userName,
@@ -44,11 +60,6 @@ class WearAlertListenerService : WearableListenerService() {
                         message = message,
                         latitude = latitude,
                         longitude = longitude
-                    )
-                    showAlertNotification(
-                        context = this@WearAlertListenerService,
-                        title = "SHEcurity Alert",
-                        message = "$userName requested location tracking."
                     )
                 }
             }

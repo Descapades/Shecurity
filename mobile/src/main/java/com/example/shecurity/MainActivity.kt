@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val notificationPermissionLauncher =
+        val smsPermissionLauncher =
             registerForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { }
@@ -49,9 +49,7 @@ class MainActivity : ComponentActivity() {
                     prefs.getBoolean("onboarding_complete", false)
 
                 currentScreen =
-                    if (intent.getBooleanExtra("open_contact_alert", false)) {
-                        "contactAlert"
-                    } else if (!onboardingComplete) {
+                    if (!onboardingComplete) {
                         "onboarding"
                     } else {
                         "menu"
@@ -60,9 +58,14 @@ class MainActivity : ComponentActivity() {
 
 
             LaunchedEffect(Unit) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    notificationPermissionLauncher.launch(
-                        Manifest.permission.POST_NOTIFICATIONS
+                val smsGranted = ContextCompat.checkSelfPermission(
+                    this@MainActivity,
+                    Manifest.permission.SEND_SMS
+                ) == PackageManager.PERMISSION_GRANTED
+
+                if (!smsGranted) {
+                    smsPermissionLauncher.launch(
+                        Manifest.permission.SEND_SMS
                     )
                 }
 
@@ -92,8 +95,7 @@ class MainActivity : ComponentActivity() {
 
                 "menu" -> MobileMenuScreen(
                     onContactsClick = { currentScreen = "contacts" },
-                    onMessageClick = { currentScreen = "message" },
-                    onContactViewClick = { currentScreen = "contactAlert" }
+                    onMessageClick = { currentScreen = "message" }
                 )
 
                 "contacts" -> EmergencyContactsScreen(
@@ -119,15 +121,6 @@ class MainActivity : ComponentActivity() {
 
                 "message" -> EmergencyMessageScreen(
                     onBackClick = { currentScreen = "menu" }
-                )
-
-                "contactAlert" -> ContactAlertScreen(
-                    onBackClick = { currentScreen = "menu" },
-                    onFollowClick = { currentScreen = "contactMap" }
-                )
-
-                "contactMap" -> ContactMapScreen(
-                    onBackClick = { currentScreen = "contactAlert" }
                 )
             }
         }
