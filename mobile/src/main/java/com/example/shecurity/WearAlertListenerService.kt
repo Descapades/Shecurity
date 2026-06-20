@@ -64,5 +64,22 @@ class WearAlertListenerService : WearableListenerService() {
                 }
             }
         }
+
+        if (messageEvent.path == "/safe_alert") {
+            val userName = String(messageEvent.data)
+
+            val contacts = loadContacts(this)
+            val primaryContact = contacts.find { it.isPrimary }
+
+            val safeMessage = "$userName has marked themselves as safe."
+
+            if (primaryContact != null) {
+                sendSmsMessage(
+                    context = this,
+                    phoneNumber = primaryContact.phone,
+                    message = safeMessage
+                )
+            }
+        }
     }
 }

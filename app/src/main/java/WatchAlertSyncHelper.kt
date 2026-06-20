@@ -24,3 +24,21 @@ fun sendAlertToPhone(
             }
         }
 }
+
+fun sendSafeToPhone(
+    context: Context,
+    userName: String
+) {
+    val payload = userName
+
+    Wearable.getNodeClient(context).connectedNodes
+        .addOnSuccessListener { nodes ->
+            nodes.forEach { node ->
+                Wearable.getMessageClient(context).sendMessage(
+                    node.id,
+                    "/safe_alert",
+                    payload.toByteArray()
+                )
+            }
+        }
+}

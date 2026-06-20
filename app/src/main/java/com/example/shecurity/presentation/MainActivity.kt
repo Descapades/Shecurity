@@ -113,7 +113,17 @@ fun WearApp() {
             )
 
             "gps" -> GpsTrackingScreen(
-                onSafeClick = { currentScreen = "safe" },
+                onSafeClick = {
+                    val prefs = context.getSharedPreferences("shecurity_prefs", Context.MODE_PRIVATE)
+                    val userName = prefs.getString("user_name", "User") ?: "User"
+
+                    sendSafeToPhone(
+                        context = context,
+                        userName = userName
+                    )
+
+                    currentScreen = "safe"
+                },
                 on911Click = { currentScreen = "dialing" }
             )
 
