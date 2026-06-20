@@ -18,12 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun MobileMenuScreen(
     onContactsClick: () -> Unit,
     onMessageClick: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -70,7 +73,7 @@ fun MobileMenuScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { },
+            onClick = { openWatchApp(context) },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(190.dp)

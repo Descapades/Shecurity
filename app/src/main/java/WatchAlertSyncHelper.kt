@@ -42,3 +42,18 @@ fun sendSafeToPhone(
             }
         }
 }
+
+fun openSettingsOnPhone(
+    context: Context
+) {
+    Wearable.getNodeClient(context).connectedNodes
+        .addOnSuccessListener { nodes ->
+            nodes.forEach { node ->
+                Wearable.getMessageClient(context).sendMessage(
+                    node.id,
+                    "/open_phone_settings",
+                    ByteArray(0)
+                )
+            }
+        }
+}

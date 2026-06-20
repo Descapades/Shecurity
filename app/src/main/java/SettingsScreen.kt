@@ -19,16 +19,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.example.shecurity.R
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun SettingsScreen(
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .clickable { onClick() },
+            .clickable {
+                openSettingsOnPhone(context)
+                onClick()
+                       },
         contentAlignment = Alignment.Center
     ) {
         Column(

@@ -81,5 +81,16 @@ class WearAlertListenerService : WearableListenerService() {
                 )
             }
         }
+
+        if (messageEvent.path == "/open_phone_settings") {
+            val intent = android.content.Intent(
+                this,
+                MainActivity::class.java
+            ).apply {
+                addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            startActivity(intent)
+        }
     }
 }

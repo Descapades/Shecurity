@@ -5,6 +5,8 @@ import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
+import android.content.Intent
+import com.google.android.gms.wearable.MessageEvent
 
 class SettingsDataListenerService : WearableListenerService() {
 
@@ -41,6 +43,16 @@ class SettingsDataListenerService : WearableListenerService() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onMessageReceived(messageEvent: MessageEvent) {
+        if (messageEvent.path == "/open_app") {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            startActivity(intent)
         }
     }
 }
