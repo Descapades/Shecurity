@@ -1,10 +1,12 @@
 package com.example.shecurity
 
+import android.content.Intent
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.net.Uri
 
 class WearAlertListenerService : WearableListenerService() {
 
@@ -88,6 +90,17 @@ class WearAlertListenerService : WearableListenerService() {
                 MainActivity::class.java
             ).apply {
                 addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            startActivity(intent)
+        }
+
+        if (messageEvent.path == "/call_emergency") {
+            val intent = Intent(
+                Intent.ACTION_CALL,
+                Uri.parse("tel:8134587969")
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
             startActivity(intent)

@@ -57,3 +57,16 @@ fun openSettingsOnPhone(
             }
         }
 }
+
+fun callEmergency(context: Context) {
+    Wearable.getNodeClient(context).connectedNodes
+        .addOnSuccessListener { nodes ->
+            nodes.forEach { node ->
+                Wearable.getMessageClient(context).sendMessage(
+                    node.id,
+                    "/call_emergency",
+                    ByteArray(0)
+                )
+            }
+        }
+}

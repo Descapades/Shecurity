@@ -133,7 +133,9 @@ fun WearApp() {
 
             "dialing" -> DialingScreen(
                 onCancelClick = { currentScreen = "main" },
-                onFinish = { currentScreen = "calling" }
+                onFinish = {
+                    callEmergency(context)
+                    currentScreen = "calling" }
             )
 
             "calling" -> CallingScreen(
