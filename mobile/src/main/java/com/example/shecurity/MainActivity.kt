@@ -94,8 +94,7 @@ class MainActivity : ComponentActivity() {
                 )
 
                 "menu" -> MobileMenuScreen(
-                    onContactsClick = { currentScreen = "contacts" },
-                    onMessageClick = { currentScreen = "message" }
+                    onContactsClick = { currentScreen = "contacts" }
                 )
 
                 "contacts" -> EmergencyContactsScreen(
@@ -117,10 +116,6 @@ class MainActivity : ComponentActivity() {
                     onSaveClick = { currentScreen = "contacts" },
                     onRemoveClick = { currentScreen = "contacts" },
                     onBackClick = { currentScreen = "contacts" }
-                )
-
-                "message" -> EmergencyMessageScreen(
-                    onBackClick = { currentScreen = "menu" }
                 )
             }
         }

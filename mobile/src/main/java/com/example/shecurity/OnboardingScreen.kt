@@ -80,14 +80,6 @@ fun OnboardingScreen(
             label = "Primary Contact Phone"
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OnboardingTextField(
-            value = emergencyMessage,
-            onValueChange = { emergencyMessage = it },
-            label = "Emergency Message"
-        )
-
         Spacer(modifier = Modifier.height(22.dp))
 
         Button(
@@ -109,7 +101,6 @@ fun OnboardingScreen(
                         .edit()
                         .putString("user_name", userName)
                         .putString("primary_contact", contactName)
-                        .putString("emergency_message", emergencyMessage)
                         .putBoolean("onboarding_complete", true)
                         .apply()
 

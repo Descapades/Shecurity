@@ -22,8 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun MobileMenuScreen(
-    onContactsClick: () -> Unit,
-    onMessageClick: () -> Unit,
+    onContactsClick: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -54,18 +53,6 @@ fun MobileMenuScreen(
                 fontFamily = ruluko_regular,
                 modifier = Modifier.clickable {
                     onContactsClick()
-                }
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            Text(
-                text = "Emergency Message",
-                color = shecurity_purple,
-                fontSize = 25.sp,
-                fontFamily = ruluko_regular,
-                modifier = Modifier.clickable {
-                    onMessageClick()
                 }
             )
         }
