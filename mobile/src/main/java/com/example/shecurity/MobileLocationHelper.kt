@@ -28,7 +28,9 @@ suspend fun getMobileLocation(context: Context): Pair<Double, Double>? {
         ).await()
     }
 
-    val finalLocation = currentLocation ?: fusedLocationClient.lastLocation.await()
+    val lastKnownLocation = fusedLocationClient.lastLocation.await()
+
+    val finalLocation = currentLocation ?: lastKnownLocation
 
     return finalLocation?.let {
         Pair(it.latitude, it.longitude)

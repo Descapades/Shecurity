@@ -22,23 +22,34 @@ class WearAlertListenerService : WearableListenerService() {
                 val message = parts[2]
 
                 CoroutineScope(Dispatchers.IO).launch {
+                    val prefs = getSharedPreferences("shecurity_prefs", MODE_PRIVATE)
+
                     val mobileLocation = getMobileLocation(this@WearAlertListenerService)
 
-                    val latitude = mobileLocation?.first ?: 0.0
-                    val longitude = mobileLocation?.second ?: 0.0
+                    val savedLatitude = prefs.getFloat("last_alert_latitude", 0f).toDouble()
+                    val savedLongitude = prefs.getFloat("last_alert_longitude", 0f).toDouble()
+
+                    val latitude = mobileLocation?.first ?: savedLatitude
+                    val longitude = mobileLocation?.second ?: savedLongitude
+
+                    val hasLocation = latitude != 0.0 && longitude != 0.0
 
                     val contacts = loadContacts(this@WearAlertListenerService)
                     val primaryContact = contacts.find { it.isPrimary }
 
                     val mapLink =
-                        if (latitude != 0.0 && longitude != 0.0) {
+                        if (hasLocation) {
                             "https://maps.google.com/?q=$latitude,$longitude"
                         } else {
-                            "Location unavailable"
+                            ""
                         }
 
                     val smsMessage =
-                        "$userName does not feel safe. Please follow their location: $mapLink"
+                        if (hasLocation) {
+                            "$userName does not feel safe. Please follow their location: $mapLink"
+                        } else {
+                            "$userName does not feel safe. Please contact them immediately."
+                        }
 
                     if (primaryContact != null) {
                         sendSmsMessage(
@@ -47,8 +58,6 @@ class WearAlertListenerService : WearableListenerService() {
                             message = smsMessage
                         )
                     }
-
-                    val prefs = getSharedPreferences("shecurity_prefs", MODE_PRIVATE)
 
                     prefs.edit()
                         .putFloat("last_alert_latitude", latitude.toFloat())
@@ -85,11 +94,11 @@ class WearAlertListenerService : WearableListenerService() {
         }
 
         if (messageEvent.path == "/open_phone_settings") {
-            val intent = android.content.Intent(
+            val intent = Intent(
                 this,
                 MainActivity::class.java
             ).apply {
-                addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
             startActivity(intent)
