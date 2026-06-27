@@ -29,7 +29,6 @@ fun sendSafeToPhone(
     context: Context,
     userName: String
 ) {
-    val payload = userName
 
     Wearable.getNodeClient(context).connectedNodes
         .addOnSuccessListener { nodes ->
@@ -37,7 +36,7 @@ fun sendSafeToPhone(
                 Wearable.getMessageClient(context).sendMessage(
                     node.id,
                     "/safe_alert",
-                    payload.toByteArray()
+                    userName.toByteArray()
                 )
             }
         }

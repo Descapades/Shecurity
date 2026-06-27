@@ -37,10 +37,6 @@ fun OnboardingScreen(
     var contactName by remember { mutableStateOf("") }
     var contactPhone by remember { mutableStateOf("") }
 
-    var emergencyMessage by remember {
-        mutableStateOf("I don't feel safe. Please follow my location.")
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()

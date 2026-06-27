@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.example.shecurity.R
-import android.content.Context
 import androidx.compose.ui.platform.LocalContext
 
 @Composable

@@ -1,6 +1,5 @@
 package com.example.shecurity.presentation
 
-import android.content.Context
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -26,7 +25,7 @@ class SettingsDataListenerService : WearableListenerService() {
 
                     val prefs = getSharedPreferences(
                         "shecurity_prefs",
-                        Context.MODE_PRIVATE
+                        MODE_PRIVATE
                     )
 
                     prefs.edit().apply {

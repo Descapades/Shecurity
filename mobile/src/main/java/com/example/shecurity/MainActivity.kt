@@ -10,11 +10,9 @@ import androidx.compose.runtime.setValue
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
-import android.os.Build
 import kotlinx.coroutines.delay
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import android.content.Context
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
                 val prefs = getSharedPreferences(
                     "shecurity_prefs",
-                    Context.MODE_PRIVATE
+                    MODE_PRIVATE
                 )
 
                 val onboardingComplete =

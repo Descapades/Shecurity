@@ -6,7 +6,7 @@ import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import android.net.Uri
+import androidx.core.net.toUri
 
 class WearAlertListenerService : WearableListenerService() {
 
@@ -125,7 +125,7 @@ class WearAlertListenerService : WearableListenerService() {
         if (messageEvent.path == "/call_emergency") {
             val intent = Intent(
                 Intent.ACTION_CALL,
-                Uri.parse("tel:8134587969")
+                "tel:8134587969".toUri()
             ).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
