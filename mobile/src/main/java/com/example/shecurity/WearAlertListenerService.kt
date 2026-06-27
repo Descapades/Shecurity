@@ -46,9 +46,22 @@ class WearAlertListenerService : WearableListenerService() {
 
                     val smsMessage =
                         if (hasLocation) {
-                            "$userName does not feel safe. Please follow their location: $mapLink"
+                            """
+                            Shecurity Alert
+        
+                            $userName does not feel safe.
+        
+                            Please follow their location:
+                            $mapLink
+                            """.trimIndent()
                         } else {
-                            "$userName does not feel safe. Please contact them immediately."
+                            """
+                            Shecurity Alert
+        
+                            $userName does not feel safe.
+        
+                            Please contact them immediately.
+                            """.trimIndent()
                         }
 
                     if (primaryContact != null) {
@@ -82,7 +95,12 @@ class WearAlertListenerService : WearableListenerService() {
             val contacts = loadContacts(this)
             val primaryContact = contacts.find { it.isPrimary }
 
-            val safeMessage = "$userName has marked themselves as safe."
+            val safeMessage =
+                """
+                Shecurity Update
+    
+                $userName has marked themselves as safe.
+                """.trimIndent()
 
             if (primaryContact != null) {
                 sendSmsMessage(
